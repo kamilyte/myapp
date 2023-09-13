@@ -3,6 +3,8 @@ from django.http import HttpResponse
 from serpapi import GoogleSearch
 
 # Create your views here.
+
+# dummy function
 def index(request):
     context = {
         'name' : 'World'
@@ -10,8 +12,6 @@ def index(request):
 
     return render(request, 'index.html', context)
 
-def printCSV(request):
-    print("Title,Authors,Year,Citations\n")
 
 def themisInput(request):
     search = input()
@@ -21,23 +21,27 @@ def themisInput(request):
 def googleSearch(request):
 
     # get author ID from Google Scholar API
+    name = "Arnold Meijster"  # !!!!! replace with query parameter !!!!!
+    split_name = name.split()
+    first_letter = split_name[0][0]
+    surname = split_name[1]
+    author_name = first_letter + " " + surname
     params = {
         "engine" : "google_scholar",
-        "q" : "author: Arnold Meijster",
+        "q" : "author: " + name,
         "api_key" : "c1b57a5186ae96e31b5966c89200e8fbe3491fb9854ad5089f56feed874dcf57"
     }
     search = GoogleSearch(params)
     results = search.get_dict()
     organic_results = results["organic_results"]
 
-    
-
     author_id = ""
     first_authors = organic_results[0]["publication_info"]["authors"]
     for author in first_authors:
-        if (author["name"] == "A Meijster"):
+        if (author["name"] == author_name):
             author_id = author["author_id"]
 
+    # get all information on author from Author API
     params = {
         "engine" : "google_scholar_author",
         "author_id" : author_id,
@@ -46,6 +50,8 @@ def googleSearch(request):
     search = GoogleSearch(params)
     results = search.get_dict()
     articles = results["articles"]
+
+    print("Title,Authors,Year,Citations\n")
 
     total_citations = 0
     for article in articles:
@@ -59,14 +65,14 @@ def googleSearch(request):
             citations = 0
             total_citations += citations
         
-        
         print_string = title + ";" + authors + ";" + str(year) + ";" + str(citations)
+        
         print(print_string)
     
     print("Total citations;" + str(total_citations))
 
 
-    return HttpResponse(organic_results[0])
+    return 
 
 
 
