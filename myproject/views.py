@@ -13,19 +13,18 @@ def index(request):
     return render(request, 'index.html', context)
 
 
-def themisInput(request):
-    search = input()
-    name = input()
-    selfCitations = input()
-
 def googleSearch(request):
 
+    name = input("name")
+
+
     # get author ID from Google Scholar API
-    name = "Arnold Meijster"  # !!!!! replace with query parameter !!!!!
+    # name = "Arnold Meijster"  # !!!!! replace with query parameter !!!!!
     split_name = name.split()
     first_letter = split_name[0][0]
     surname = split_name[1]
     author_name = first_letter + " " + surname
+    print(author_name)
     params = {
         "engine" : "google_scholar",
         "q" : "author: " + name,
@@ -36,10 +35,16 @@ def googleSearch(request):
     organic_results = results["organic_results"]
 
     author_id = ""
-    first_authors = organic_results[0]["publication_info"]["authors"]
-    for author in first_authors:
-        if (author["name"] == author_name):
-            author_id = author["author_id"]
+    idx = 0
+    flag = False
+    while (flag == False):
+        test_authors = organic_results[idx]["publication_info"]["authors"]
+
+        for author in test_authors:
+            if (author["name"] == author_name):
+                author_id = author["author_id"]
+                flag = True 
+        idx += 1
 
     # get all information on author from Author API
     params = {
@@ -72,7 +77,7 @@ def googleSearch(request):
     print("Total citations;" + str(total_citations))
 
 
-    return 
+    return render(request, 'index.html')
 
 
 
