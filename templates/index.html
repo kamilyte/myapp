@@ -1,3 +1,17 @@
-<h1>
-    Hello, World!
-</h1>
+<body>
+    <form method="post">
+        {% csrf_token %}
+        <label for="name">Name:</label>
+        <input type="text" name="name">
+        <input type="submit" name="button">
+    </form>
+    <table>
+        <tr>
+            <th>Title</th>
+            <th>Authors</th>
+            <th>Publication Year</th>
+            <th>Citations</th>
+        </tr>
+        {{myHTML|safe}}
+    </table>
+</body>
