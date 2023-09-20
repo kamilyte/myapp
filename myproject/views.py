@@ -45,6 +45,8 @@ def googleSearch(request):
             start = 0  # Initialize start parameter for pagination
             num = 20   # Number of results per page (API limit)
 
+            print("Title,Authors,Year,Citations\n")
+
             while True:
                 params = {
                     "engine": "google_scholar_author",
@@ -70,7 +72,9 @@ def googleSearch(request):
                     if type(citations) == int:
                         total_citations += citations
 
-                    myHTML += f"<tr><td>{title}</td><td>{name}</td><td>{authors}</td><td>{year}</td><td>{citations}</td></tr>"
+                    myHTML += f"<tr><td>{title}</td><td>{authors}</td><td>{year}</td><td>{citations}</td></tr>"
+                    print_string = title + ";" + authors + ";" + str(year) + ";" + str(citations)
+                    print(print_string)
 
                 start += num  # Update the start parameter for the next page
 
