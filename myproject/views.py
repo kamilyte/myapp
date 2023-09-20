@@ -3,13 +3,14 @@ from serpapi import GoogleSearch
 
 def googleSearch(request):
 
+    total_citations = 0  # Initialize the total_citations variable
+    myHTML = ""  # Empty HTML script
+
     if request.method == "POST":
         name = request.POST.get('name')
     else:
         print("GET")
         name = ""
-
-    myHTML = ""  # Empty HTML script
 
     if name.strip():
         split_name = name.split()
@@ -21,7 +22,7 @@ def googleSearch(request):
 
             params = {
                 "engine": "google_scholar",
-                "q": "author: " + name,
+                "q": "author:" + name,
                 "api_key": "c1b57a5186ae96e31b5966c89200e8fbe3491fb9854ad5089f56feed874dcf57",
             }
 
@@ -43,7 +44,6 @@ def googleSearch(request):
 
             start = 0  # Initialize start parameter for pagination
             num = 20   # Number of results per page (API limit)
-            total_citations = 0
 
             while True:
                 params = {
@@ -69,22 +69,19 @@ def googleSearch(request):
 
                     if type(citations) == int:
                         total_citations += citations
-                    else:
-                        citations = 0
-                        total_citations += citations
 
                     myHTML += f"<tr><td>{title}</td><td>{name}</td><td>{authors}</td><td>{year}</td><td>{citations}</td></tr>"
 
                 start += num  # Update the start parameter for the next page
 
-            print(f"Total citations; {total_citations}")
+            return render(request, 'index.html', {"myHTML": myHTML, "total_citations": total_citations})
 
         else:
             print("Name should have a first name and a surname.")
-            return render(request, 'index.html', {"myHTML": ""})
+            return render(request, 'index.html', {"myHTML": "", "total_citations": 0})
 
     else:
         print("Name is empty or not valid.")
-        return render(request, 'index.html', {"myHTML": ""})
+        return render(request, 'index.html', {"myHTML": "", "total_citations": 0})
 
-    return render(request, 'index.html', {"myHTML": myHTML})
+    return render(request, 'index.html', {"myHTML": myHTML, "total_citations": total_citations})
