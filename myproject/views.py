@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from serpapi import GoogleSearch
+from django.views.decorators.csrf import csrf_exempt
 
+@csrf_exempt
 def googleSearch(request):
 
     total_citations = 0  # Initialize the total_citations variable
